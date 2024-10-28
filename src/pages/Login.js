@@ -13,7 +13,7 @@ const Login = () => {
   const handleLogin = async (e) => {
     e.preventDefault();
     try {
-      const response = await axios.post('http://localhost:8084/api/v1/auth/login', {
+      const response = await axios.post('https://gamebuddy-gateway-service-667535775424.herokuapp.com/api/v1/auth/login', {
         userName: username,
         password: password,
       });
@@ -21,10 +21,11 @@ const Login = () => {
       localStorage.setItem('user', JSON.stringify(response.data));
       navigate('/'); // Anasayfaya yönlendir
     } catch (error) {
-      setErrorMessage('Giriş işlemi sırasında bir hata oluştu.'); // Hata mesajı göster
+      setErrorMessage(error.response?.data?.message || 'Giriş işlemi sırasında bir hata oluştu.');
       console.error('An error occurred while logging in:', error);
     }
-  };
+};
+
 
   return (
     <Segment>

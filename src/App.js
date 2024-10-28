@@ -7,6 +7,7 @@ import MatchMaking from "./pages/MatchMaking";
 import Header from "./components/Header";
 import Login from "./pages/Login";    
 import Register from "./pages/Register";
+import UserList from './pages/UserList'; 
 
 function App() {
   return (
@@ -18,6 +19,7 @@ function App() {
         <Route path="/matchmaking" element={<MatchMaking />} />
         <Route path="/login" element={<Login />} />     
         <Route path="/register" element={<Register />} /> 
+        <Route path="/users" element={<UserList />} />
       </Routes>
     </div>
   );
