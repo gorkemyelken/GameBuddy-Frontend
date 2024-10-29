@@ -1,52 +1,77 @@
 // src/pages/Profile.js
-import React from 'react';
-import { Card, Image, Header, Segment, List, Divider } from 'semantic-ui-react';
+import React, { useEffect, useState } from 'react';
+import { Header, Segment, List, Image } from 'semantic-ui-react';
 
 const Profile = () => {
-  // Local storage'dan kullanıcı bilgisini al
-  const user = JSON.parse(localStorage.getItem('user'));
+  const [userInfo, setUserInfo] = useState(null);
+  const [gameStats, setGameStats] = useState([]);
+  
+  // Kullanıcı bilgilerini localStorage'dan al
+  const userInfoFromStorage = JSON.parse(localStorage.getItem('user'));
+  
+  useEffect(() => {
+    if (userInfoFromStorage) {
+      setUserInfo(userInfoFromStorage);
+      fetchGameStats(userInfoFromStorage.id); // Kullanıcı ID'si ile oyun istatistiklerini çek
+    }
+  }, [userInfoFromStorage]);
 
-  // Kullanıcı bilgileri yoksa bir mesaj göster
-  if (!user) {
-    return <p>Kullanıcı bilgileri bulunamadı. Lütfen giriş yapın.</p>;
-  }
+  // Oyun istatistiklerini almak için API çağrısı
+  const fetchGameStats = async (userId) => {
+    try {
+      const response = await fetch(`https://gamebuddy-game-service-1355a6fbfb17.herokuapp.com/api/v1/gamestats/user/${userId}`);
+      
+      if (!response.ok) {
+        throw new Error(`HTTP hata! Status: ${response.status}`);
+      }
+
+      const data = await response.json();
+      setGameStats(data);
+    } catch (error) {
+      console.error('Fetch hata:', error.message);
+    }
+  };
+
+  if (!userInfo) return <p>Loading...</p>; // Veriler yüklenene kadar bekle
 
   return (
-    <Segment style={{ padding: '2em 0' }}>
-      <Header as='h2' textAlign='center'>Profil Bilgileriniz</Header>
-      <Card centered>
-        <Image 
-          src={user.profilePhoto || 'https://via.placeholder.com/150'} 
-          wrapped 
-          ui={false} 
-          alt="Profil Resmi" 
-          style={{ borderRadius: '50%', margin: '1em 0' }} 
-        />
-        <Card.Content>
-          <Card.Header>{user.userName}</Card.Header> {/* Kullanıcı adını en üste ekledik */}
-          <Card.Meta>
-            <List>
-              <List.Item>Email: {user.email}</List.Item>
-              <List.Item>Cinsiyet: {user.gender}</List.Item>
-              <List.Item>Yaş: {user.age}</List.Item>
-              <List.Item>
-                Üyelik Durumu: {user.isPremium ? 'Premium Üye' : 'Standart Üye'}
-              </List.Item>
-            </List>
-          </Card.Meta>
-          <Divider />
-          <Card.Description>
-            <List>
-              <List.Item>
-                Üyelik Tarihi: {new Date(user.createdAt).toLocaleDateString()}
-              </List.Item>
-              <List.Item>
-                Son Güncelleme: {user.updatedAt ? new Date(user.updatedAt).toLocaleDateString() : '-'}
-              </List.Item>
-            </List>
-          </Card.Description>
-        </Card.Content>
-      </Card>
+    <Segment>
+      <Header as='h2' textAlign='center'>Profil Bilgileri</Header>
+      {userInfo.profilePhoto ? (
+        <Image src={userInfo.profilePhoto} alt="Profile" size='small' circular centered />
+      ) : (
+        <Image src='/path/to/default/profile/photo.jpg' alt="Default Profile" size='small' circular centered />
+      )}
+      <List>
+        <List.Item>
+          <strong>Kullanıcı Adı:</strong> {userInfo.userName}
+        </List.Item>
+        <List.Item>
+          <strong>E-posta:</strong> {userInfo.email}
+        </List.Item>
+        <List.Item>
+          <strong>Cinsiyet:</strong> {userInfo.gender === 'MALE' ? 'Erkek' : 'Kadın'}
+        </List.Item>
+        <List.Item>
+          <strong>Yaş:</strong> {userInfo.age}
+        </List.Item>
+        <List.Item>
+          <strong>Premium Üyelik:</strong> {userInfo.premium ? 'Evet' : 'Hayır'}
+        </List.Item>
+      </List>
+
+      <Header as='h3' textAlign='center'>Oyun İstatistikleri</Header>
+      {gameStats.length > 0 ? (
+        <List>
+          {gameStats.map(stat => (
+            <List.Item key={stat.id}>
+              Oyun ID: {stat.gameId}, Rütbe: {stat.gameRank}
+            </List.Item>
+          ))}
+        </List>
+      ) : (
+        <p>Oyun istatistikleri bulunamadı.</p>
+      )}
     </Segment>
   );
 };

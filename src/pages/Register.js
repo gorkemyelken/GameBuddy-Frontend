@@ -7,17 +7,21 @@ const Register = () => {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [email, setEmail] = useState('');
+  const [gender, setGender] = useState('');
+  const [age, setAge] = useState(0);
   const navigate = useNavigate();
 
   const handleRegister = async () => {
     const registerData = {
       userName: username,
-      password: password,
       email: email,
+      password: password,
+      gender: gender,
+      age: age,
     };
 
     try {
-      const response = await fetch('http://localhost:8084/api/v1/auth/register', {
+      const response = await fetch('https://gamebuddy-user-service-04b8e7746067.herokuapp.com/api/v1/users/register', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -66,6 +70,23 @@ const Register = () => {
             placeholder='Emailinizi Girin'
             value={email}
             onChange={(e) => setEmail(e.target.value)}
+          />
+        </Form.Field>
+        <Form.Field>
+          <label>Cinsiyet</label>
+          <select value={gender} onChange={(e) => setGender(e.target.value)}>
+            <option value="">Cinsiyet Seçin</option>
+            <option value="MALE">Erkek</option>
+            <option value="FEMALE">Kadın</option>
+          </select>
+        </Form.Field>
+        <Form.Field>
+          <label>Yaş</label>
+          <input
+            type='number'
+            placeholder='Yaşınızı Girin'
+            value={age}
+            onChange={(e) => setAge(parseInt(e.target.value))}
           />
         </Form.Field>
         <Button primary onClick={handleRegister}>Kayıt Ol</Button>

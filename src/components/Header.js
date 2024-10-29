@@ -25,8 +25,16 @@ function Header() {
       <Menu.Item as={Link} to="/profile">
         Profile
       </Menu.Item>
+      <Menu.Item as={Link} to="/gamelist">
+        Game List
+      </Menu.Item>,<Menu.Item as={Link} to="/userlist">
+        User List
+      </Menu.Item>
       <Menu.Item as={Link} to="/matchmaking">
         Matchmaking
+      </Menu.Item>
+      <Menu.Item as={Link} to="/usersearch">
+        User Search
       </Menu.Item>
       <Menu.Item position="right">
         {user ? (

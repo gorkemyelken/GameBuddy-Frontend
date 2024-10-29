@@ -8,6 +8,8 @@ import Header from "./components/Header";
 import Login from "./pages/Login";    
 import Register from "./pages/Register";
 import UserList from './pages/UserList'; 
+import UserSearchPage from "./pages/UserSearchPage";
+import GameList from "./pages/GameList";
 
 function App() {
   return (
@@ -19,7 +21,9 @@ function App() {
         <Route path="/matchmaking" element={<MatchMaking />} />
         <Route path="/login" element={<Login />} />     
         <Route path="/register" element={<Register />} /> 
-        <Route path="/users" element={<UserList />} />
+        <Route path="/userlist" element={<UserList />} />
+        <Route path="/usersearch" element={<UserSearchPage />} />
+        <Route path="/gamelist" element={<GameList />} />
       </Routes>
     </div>
   );
